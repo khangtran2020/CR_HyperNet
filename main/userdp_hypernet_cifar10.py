@@ -239,5 +239,5 @@ if __name__ == '__main__':
         args.classes_per_node = 2
     else:
         args.classes_per_node = 10
-
+    print("Class per nodes are:", args.classes_per_node)
     train(args, device)
