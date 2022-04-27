@@ -191,7 +191,7 @@ def train(args, device) -> None:
             p.grad = p.grad + torch.normal(0, get_gaussian_noise(clipping_noise=args.grad_clip,
                                                                  noise_scale=args.noise_scale,
                                                                  sampling_prob=sampling_prob,
-                                                                 num_client=args.num_comp_cli),p.grad.size())
+                                                                 num_client=args.num_comp_cli),p.grad.size()).to(device)
         optimizer.step()
 
         if step % 10 == 0:
