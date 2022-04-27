@@ -235,7 +235,7 @@ if __name__ == '__main__':
 
     device = get_device(gpus=args.gpu)
 
-    if args.data_name == 'cifar10':
+    if args.dataset == 'cifar10':
         args.classes_per_node = 2
     else:
         args.classes_per_node = 10
