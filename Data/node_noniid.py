@@ -1,4 +1,4 @@
-from dataset_noniid import gen_random_loaders
+from Data.dataset_noniid import gen_random_loaders
 
 
 class BaseNodes:
