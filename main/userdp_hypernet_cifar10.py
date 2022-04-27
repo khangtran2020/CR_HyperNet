@@ -62,21 +62,21 @@ def evaluate(nodes: BaseNodes, num_nodes, hnet, net, criteria, device, split='te
 
 def train(args, device) -> None:
     # training params
-    nodes = BaseNodes(args.dataset, args.data_path, args.num_nodes, classes_per_node=args.classes_per_node,
+    nodes = BaseNodes(args.dataset, args.data_path, args.num_client, classes_per_node=args.classes_per_node,
                       batch_size=args.batch_size)
-    sampling_prob = args.bt / args.num_nodes
+    sampling_prob = args.bt / args.num_client
     embed_dim = args.embed_dim
 
     if embed_dim == -1:
         logging.info("auto embedding size")
-        embed_dim = int(1 + args.num_nodes / 4)
+        embed_dim = int(1 + args.num_client / 4)
 
     if args.dataset == "cifar10":
-        hnet = CNNHyper(args.num_nodes, embed_dim, hidden_dim=args.hyper_hid, n_hidden=args.n_hidden,
+        hnet = CNNHyper(args.num_client, embed_dim, hidden_dim=args.hyper_hid, n_hidden=args.n_hidden,
                         n_kernels=args.nkernels)
         net = CNNTarget(n_kernels=args.nkernels)
     elif args.dataset == "cifar100":
-        hnet = CNNHyper(args.num_nodes, embed_dim, hidden_dim=args.hyper_hid,
+        hnet = CNNHyper(args.num_client, embed_dim, hidden_dim=args.hyper_hid,
                         n_hidden=args.n_hidden, n_kernels=args.nkernels, out_dim=100)
         net = CNNTarget(n_kernels=args.nkernels, out_dim=100)
     else:
@@ -116,7 +116,7 @@ def train(args, device) -> None:
 
     results = defaultdict(list)
 
-    name_add = 'train_batch_n' + str(args.num_nodes) + '_nc' + str(args.bt) + '_lr' + str(args.lr) + '_ilr' + str(
+    name_add = 'train_batch_n' + str(args.num_client) + '_nc' + str(args.bt) + '_lr' + str(args.lr) + '_ilr' + str(
         args.inner_lr) + '_seed' + str(args.seed) + '_noniid_c2'
 
     step_vect = []
@@ -124,7 +124,7 @@ def train(args, device) -> None:
         start_time = time.time()
         hnet.train()
 
-        node_id_vect = random.sample(range(args.num_nodes), args.bt)
+        node_id_vect = random.sample(range(args.num_client), args.bt)
 
         hnet_grads_all = defaultdict(list)
         c = 0
@@ -196,14 +196,14 @@ def train(args, device) -> None:
 
         if step % 10 == 0:
             last_eval = step
-            step_results, avg_loss, avg_acc, all_acc = eval_model(nodes, args.num_nodes, hnet, net, criteria, device,
+            step_results, avg_loss, avg_acc, all_acc = eval_model(nodes, args.num_client, hnet, net, criteria, device,
                                                                   split="test")
             logging.info(f"\nStep: {step + 1}, AVG Loss: {avg_loss:.4f},  AVG Acc: {avg_acc:.4f}")
 
             results['test_avg_loss'].append(avg_loss)
             results['test_avg_acc'].append(avg_acc)
 
-            _, val_avg_loss, val_avg_acc, _ = eval_model(nodes, args.num_nodes, hnet, net, criteria, device,
+            _, val_avg_loss, val_avg_acc, _ = eval_model(nodes, args.num_client, hnet, net, criteria, device,
                                                          split="val")
             if best_acc < val_avg_acc:
                 best_acc = val_avg_acc
