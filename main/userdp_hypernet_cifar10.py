@@ -62,7 +62,7 @@ def evaluate(nodes: BaseNodes, num_nodes, hnet, net, criteria, device, split='te
 
 def train(args, device) -> None:
     # training params
-    nodes = BaseNodes(args.data_name, args.data_path, args.num_nodes, classes_per_node=args.classes_per_node,
+    nodes = BaseNodes(args.dataset, args.data_path, args.num_nodes, classes_per_node=args.classes_per_node,
                       batch_size=args.batch_size)
     sampling_prob = args.bt / args.num_nodes
     embed_dim = args.embed_dim
@@ -71,16 +71,16 @@ def train(args, device) -> None:
         logging.info("auto embedding size")
         embed_dim = int(1 + args.num_nodes / 4)
 
-    if args.data_name == "cifar10":
+    if args.dataset == "cifar10":
         hnet = CNNHyper(args.num_nodes, embed_dim, hidden_dim=args.hyper_hid, n_hidden=args.n_hidden,
                         n_kernels=args.nkernels)
         net = CNNTarget(n_kernels=args.nkernels)
-    elif args.data_name == "cifar100":
+    elif args.dataset == "cifar100":
         hnet = CNNHyper(args.num_nodes, embed_dim, hidden_dim=args.hyper_hid,
                         n_hidden=args.n_hidden, n_kernels=args.nkernels, out_dim=100)
         net = CNNTarget(n_kernels=args.nkernels, out_dim=100)
     else:
-        raise ValueError("choose data_name from ['cifar10', 'cifar100']")
+        raise ValueError("choose dataset from ['cifar10', 'cifar100']")
 
     hnet = hnet.to(device)
     net = net.to(device)
