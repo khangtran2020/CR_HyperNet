@@ -169,8 +169,8 @@ def train(args, device) -> None:
             temp_net_list_grad = []
             for p, g in zip(temp_net.parameters(), hnet_grads_each):
                 p.grad = g
-                torch.nn.utils.clip_grad_norm_(p, args.grad_clip)
-                temp_net_list_grad.append(p.grad)
+            torch.nn.utils.clip_grad_norm_(temp_net.parameters(), args.grad_clip)
+            temp_net_list_grad = [p.grad for p in temp_net.parameters()]
 
 
             if c == 0:
