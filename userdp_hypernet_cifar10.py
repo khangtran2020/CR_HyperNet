@@ -132,7 +132,7 @@ def train(args, device) -> None:
             # produce & load local network weights
             weights, _ = hnet(torch.tensor([node_id], dtype=torch.long).to(device))
             net.load_state_dict(weights)
-
+            temp_net = deepcopy(hnet)
             # init inner optimizer
             inner_optim = torch.optim.SGD(
                 net.parameters(), lr=args.inner_lr, momentum=.9, weight_decay=args.inner_wd
@@ -166,15 +166,19 @@ def train(args, device) -> None:
             hnet_grads_each = torch.autograd.grad(
                 list(weights.values()), hnet.parameters(), grad_outputs=list(delta_theta.values())
             )
-            # hnet.embeddings.weight.grad = hnet_grads_each[0]
-            # optimizer.step()
+            temp_net_list_grad = []
+            for p, g in zip(temp_net.parameters(), hnet_grads_each):
+                p.grad = g
+                torch.nn.utils.clip_grad_norm_(p, args.grad_clip)
+                temp_net_list_grad.append(p.grad)
+
 
             if c == 0:
-                hnet_grads = deepcopy(list(hnet_grads_each))
+                hnet_grads = deepcopy(temp_net_list_grad)
                 for t in range(len(hnet_grads)):
                     hnet_grads[t] = hnet_grads[t] / args.bt
             else:
-                tmp = list(hnet_grads_each)
+                tmp = temp_net_list_grad
                 for t in range(len(hnet_grads)):
                     hnet_grads[t] += tmp[t] / args.bt
             c += 1
@@ -186,7 +190,7 @@ def train(args, device) -> None:
         #     if 'embed' in n:
         #         p.grad = None
 
-        torch.nn.utils.clip_grad_norm_(hnet.parameters(), args.grad_clip)
+
         for p in hnet.parameters():
             p.grad = p.grad + torch.normal(0, get_gaussian_noise(clipping_noise=args.grad_clip,
                                                                  noise_scale=args.noise_scale,
