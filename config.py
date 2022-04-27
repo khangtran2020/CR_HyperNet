@@ -81,6 +81,8 @@ def add_atk_group(group):
 def add_defense_group(group):
     group.add_argument('--grad_clip', type=float, default=0.1, help="clipping bound for user-dp")
     group.add_argument('--noise_scale', type=float, default=0.1, help="noise scale for user-dp")
+    group.add_argument('--num_comp_cli', type=int, default=1, help="number of compromised client for user-dp")
+
 
 def parse_args():
     parser = argparse.ArgumentParser()
