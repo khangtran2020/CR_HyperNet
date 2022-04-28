@@ -6,7 +6,7 @@ def add_general_group(group):
     group.add_argument("--eval-every", type=int, default=30, help="eval every X selected epochs")
     group.add_argument("--save-path", type=str, default="results/", help="dir path for output file")
     group.add_argument("--seed", type=int, default=42, help="seed value")
-    group.add_argument("--num-steps", type=int, default=50000)
+    group.add_argument("--num_steps", type=int, default=50000)
     group.add_argument("--optim", type=str, default='sgd', choices=['adam', 'sgd'], help="learning rate")
     group.add_argument("--batch-size", type=int, default=100)
     group.add_argument("--inner-steps", type=int, default=4, help="number of inner steps")
@@ -60,8 +60,6 @@ def add_atk_group(group):
     group.add_argument('--gtn_input_type', type=str, default='2hop',
                        help="how to process org graphs before inputting to GTN")
 
-    group.add_argument('--resample_steps', type=int, default=3, help="# iterations to re-select graph samples")
-    group.add_argument('--bilevel_steps', type=int, default=4, help="# bi-level optimization iterations")
     group.add_argument('--gtn_lr', type=float, default=0.01)
     group.add_argument('--rlr_thres', type=float, default=0.01)
     group.add_argument('--gtn_epochs', type=int, default=20, help="# attack epochs")
@@ -82,6 +80,7 @@ def add_defense_group(group):
     group.add_argument('--grad_clip', type=float, default=0.1, help="clipping bound for user-dp")
     group.add_argument('--noise_scale', type=float, default=0.1, help="noise scale for user-dp")
     group.add_argument('--num_comp_cli', type=int, default=1, help="number of compromised client for user-dp")
+    group.add_argument('--delta', type=int, default=1, help="broken probability of userdp")
 
 
 def parse_args():

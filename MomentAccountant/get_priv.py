@@ -1,23 +1,10 @@
 # -*- coding: utf-8 -*-
-import numpy as np;
+import sys
+sys.path.append('../')
 import tensorflow.compat.v1 as tf
-
 tf.disable_v2_behavior()
-from tensorflow.python.framework import ops;
-# from tensorflow.examples.tutorials.mnist import input_data;
-import argparse;
-import numpy as np
-import math
-import random
-# import scipy.integrate as integrate
-# import scipy.stats
-import mpmath as mp
 from gaussian_moments import *
-from tensorflow.python.platform import flags
-from datetime import datetime
 import time
-# from tensorflow.python.training import optimizer
-# from tensorflow.python.training.gradient_descent import GradientDescentOptimizer
 import accountant, utils
 import pandas as pd
 
@@ -77,21 +64,20 @@ FLAGS = None;
 target_eps = [1.34, 1.35, 1.36]  # [0.5, 1, 2, 3, 4];
 
 
-def main():
+def get_privacy(args):
     small_num = 1e-5  # 'a small number'
     large_num = 1e5  # a large number'
 
-    z = 1
-    sigma = z  # 'noise scale'
 
-    delta = 1e-4  # 'delta'
+    sigma = args.noise_scale  # 'noise scale'
 
-    clip = 1  # 'whether to clip the gradient'
+    delta = args.delta  # 'delta'
 
-    D = 2500
-    batch_size = 50
-    sample_rate = batch_size / D  # 'sample rate q = L / N'
-    num_steps = 160000  # 'number of steps T = E * N / L = E / q'
+    clip = args.grad_clip  # 'whether to clip the gradient'
+
+    D = args.num_client
+    batch_size = args.bt
+    num_steps = args.num_steps  # 'number of steps T = E * N / L = E / q'
     result_path = 'check_priv_spent_nscale' + str(sigma) + '_D' + str(D) + '_bs' + str(batch_size)  # + '.txt'
 
     '''from tensorflow.examples.tutorials.mnist import input_data;
@@ -106,11 +92,6 @@ def main():
 
         # sess.run(tf.initialize_all_variables())
         sess.run(tf.global_variables_initializer())
-
-        start_time = time.time()
-        # with open(result_path, 'a') as outf:
-        #     outf.write('delta target {} \n'.format(delta))
-
         iter_ = []
         eps_ = []
         delta_ = []
@@ -118,28 +99,21 @@ def main():
             sess.run([privacy_accum_op])
             spent_eps_deltas = priv_accountant.get_privacy_spent(sess, target_eps=[target])
             print(i, spent_eps_deltas)
-            # exit()
-            # with open(result_path, 'a') as outf:
-            #     outf.write('| step {} | priv {}\n'.format(i, spent_eps_deltas))
-            #     # outf.write('=' * 8)
             iter_.append(i)
             eps_.append(spent_eps_deltas[0][0])
             delta_.append(spent_eps_deltas[0][1])
+    return eps_, delta_
+            # _break = False
+            # for _eps, _delta in spent_eps_deltas:
+            #     if _delta >= delta:
+            #         _break = True
+            #         break
+            # if _break == True:
+            #     break
+        # data_w = {'epoch': iter_, 'eps': eps_, 'delta spent': delta_}
+        # my_csv = pd.DataFrame(data_w)
+        # my_csv.to_csv(result_path + '_epoch' + str(i) + '_eps' + str(target) + '_delta1e-5.csv', index=False)
 
-            _break = False
-            for _eps, _delta in spent_eps_deltas:
-                if _delta >= delta:
-                    _break = True
-                    break
-            if _break == True:
-                break
-        data_w = {'epoch': iter_, 'eps': eps_, 'delta spent': delta_}
-        my_csv = pd.DataFrame(data_w)
-        my_csv.to_csv(result_path + '_epoch' + str(i) + '_eps' + str(target) + '_delta1e-5.csv', index=False)
-        ###
 
 
-main()
-# if __name__ == '__main__':
-#   tf.app.run()
 
