@@ -1,5 +1,5 @@
 import sys
-sys.path.append('../../')
+sys.path.insert(0,"../../CR_HyperNet")
 import logging
 import random
 from collections import OrderedDict, defaultdict
