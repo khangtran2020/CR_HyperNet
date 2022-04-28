@@ -1,12 +1,7 @@
 import sys
 import os
-print(os.path.realpath(__file__))
 path = "/".join([x for x in os.path.realpath(__file__).split('/')[:-2]])
-print(path)
-sys.path.insert(0,"../../CR_HyperNet/Models")
-sys.path.insert(0,"../../CR_HyperNet/Data")
-sys.path.insert(0,"../../CR_HyperNet/Utils")
-sys.path.insert(0,"../../CR_HyperNet")
+sys.path.insert(0, path)
 import logging
 import random
 from collections import OrderedDict, defaultdict
