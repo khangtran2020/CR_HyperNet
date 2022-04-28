@@ -1,5 +1,5 @@
 import sys
-sys.path.append('../')
+sys.path.append('../../')
 import logging
 import random
 from collections import OrderedDict, defaultdict
