@@ -1,4 +1,5 @@
-import json
+import sys
+sys.path.append('../')
 import logging
 import random
 from collections import OrderedDict, defaultdict
