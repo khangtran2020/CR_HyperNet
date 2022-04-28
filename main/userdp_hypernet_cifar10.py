@@ -1,4 +1,7 @@
 import sys
+sys.path.insert(0,"../../CR_HyperNet/Models")
+sys.path.insert(0,"../../CR_HyperNet/Data")
+sys.path.insert(0,"../../CR_HyperNet/Utils")
 sys.path.insert(0,"../../CR_HyperNet")
 import logging
 import random
