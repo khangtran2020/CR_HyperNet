@@ -1,4 +1,6 @@
 import sys
+import os
+print(os.path.realpath(__file__))
 sys.path.insert(0,"../../CR_HyperNet/Models")
 sys.path.insert(0,"../../CR_HyperNet/Data")
 sys.path.insert(0,"../../CR_HyperNet/Utils")
