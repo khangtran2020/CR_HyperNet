@@ -80,7 +80,7 @@ def add_defense_group(group):
     group.add_argument('--grad_clip', type=float, default=0.1, help="clipping bound for user-dp")
     group.add_argument('--noise_scale', type=float, default=0.1, help="noise scale for user-dp")
     group.add_argument('--num_comp_cli', type=int, default=1, help="number of compromised client for user-dp")
-    group.add_argument('--delta', type=int, default=1, help="broken probability of userdp")
+    group.add_argument('--delta', type=float, default=1, help="broken probability of userdp")
 
 
 def parse_args():
