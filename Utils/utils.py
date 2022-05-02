@@ -50,3 +50,6 @@ def get_device(no_cuda=False, gpus='0'):
 
 def get_gaussian_noise(clipping_noise, noise_scale, sampling_prob, num_client, num_compromised_client=1):
     return (num_compromised_client*noise_scale*clipping_noise)/(sampling_prob*num_client)
+
+def draw_noise_to_phi(hnet, num_draws, gaussian_nois):
+    pass
