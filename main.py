@@ -26,7 +26,7 @@ def run(args, device):
     else:
         raise ValueError("choose dataset from ['cifar10', 'cifar100']")
 
-    print(hnet.state_dict())
+    print(hnet.parameters())
     exit()
 
     if args.mode == 'train':
