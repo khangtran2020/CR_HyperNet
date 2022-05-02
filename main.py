@@ -32,7 +32,7 @@ def run(args, device):
     for p in hnet.parameters():
         model_params.append(p.detach().tolist())
     model_params = np.array(model_params)
-    print(model_params)
+    print(torch.from_numpy(model_params))
     exit()
 
     if args.mode == 'train':
