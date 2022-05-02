@@ -1,6 +1,7 @@
 import sys
 import os
 import sys
+
 path = "/".join([x for x in os.path.realpath(__file__).split('/')[:-2]])
 sys.path.insert(0, path)
 import logging
@@ -123,6 +124,8 @@ def train(args, device) -> None:
     name_add = 'train_batch_n' + str(args.num_client) + '_nc' + str(args.bt) + '_lr' + str(args.lr) + '_ilr' + str(
         args.inner_lr) + '_seed' + str(args.seed) + '_noniid_c2'
 
+    noise_std = get_gaussian_noise(clipping_noise=args.grad_clip, noise_scale=args.noise_scale,
+                                   sampling_prob=sampling_prob, num_client=args.num_comp_cli)
     step_vect = []
     for step in step_iter:
         start_time = time.time()
@@ -176,7 +179,6 @@ def train(args, device) -> None:
             torch.nn.utils.clip_grad_norm_(temp_net.parameters(), args.grad_clip)
             temp_net_list_grad = [p.grad for p in temp_net.parameters()]
 
-
             if c == 0:
                 hnet_grads = deepcopy(temp_net_list_grad)
                 for t in range(len(hnet_grads)):
@@ -194,12 +196,10 @@ def train(args, device) -> None:
         #     if 'embed' in n:
         #         p.grad = None
 
-        print("The Grad of global model",hnet.parameters().grad)
+        # print("",hnet.parameters().grad)
+
         for p in hnet.parameters():
-            p.grad = p.grad + torch.normal(0, get_gaussian_noise(clipping_noise=args.grad_clip,
-                                                                 noise_scale=args.noise_scale,
-                                                                 sampling_prob=sampling_prob,
-                                                                 num_client=args.num_comp_cli),p.grad.size()).to(device)
+            p.grad = p.grad + torch.normal(0, noise_std, p.grad.size()).to(device)/args.bt
         optimizer.step()
 
         if step % 10 == 0:
