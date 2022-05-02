@@ -194,7 +194,7 @@ def train(args, device) -> None:
         #     if 'embed' in n:
         #         p.grad = None
 
-
+        print("The Grad of global model",hnet.parameters().grad)
         for p in hnet.parameters():
             p.grad = p.grad + torch.normal(0, get_gaussian_noise(clipping_noise=args.grad_clip,
                                                                  noise_scale=args.noise_scale,
