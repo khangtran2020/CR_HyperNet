@@ -33,7 +33,7 @@ def run(args, device):
     new_set_params = {}
     for key in hnet.state_dict():
         value = hnet.state_dict()[key]
-        new_set_params[key] = torch.cat(3*[value.view(1, value.size())])
+        new_set_params[key] = torch.cat(3*[value.view(tuple([1] + [x for x in value.size()]))])
         print(value.size(), new_set_params[key].size())
     exit()
 
