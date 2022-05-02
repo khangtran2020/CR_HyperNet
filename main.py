@@ -31,7 +31,7 @@ def run(args, device):
     model_params = []
     for p in hnet.parameters():
         model_params.append(p)
-    print(torch.Tensor(model_params))
+    print(torch.as_tensor(model_params))
     exit()
 
     if args.mode == 'train':
