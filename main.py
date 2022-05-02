@@ -35,6 +35,7 @@ def run(args, device):
         new_set_params[key] = value.repeat(100)
         print(value.size(), new_set_params[key].size())
     exit()
+
     if args.mode == 'train':
         if args.train_mode == 'clean':
             train_clean(args=args,device=device,nodes=nodes,hnet=hnet,net=net)
