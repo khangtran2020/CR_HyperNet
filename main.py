@@ -31,7 +31,8 @@ def run(args, device):
         raise ValueError("choose dataset from ['cifar10', 'cifar100']")
 
     new_set_params = {}
-    for key, value in hnet.state_dict():
+    for key in hnet.state_dict():
+        value = hnet.state_dict()[key]
         new_set_params[key] = value.repeat(100)
         print(value.size(), new_set_params[key].size())
     exit()
