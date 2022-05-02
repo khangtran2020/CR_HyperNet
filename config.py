@@ -6,7 +6,7 @@ def add_general_group(group):
     group.add_argument("--eval-every", type=int, default=30, help="eval every X selected epochs")
     group.add_argument("--save-path", type=str, default="results/", help="dir path for output file")
     group.add_argument("--seed", type=int, default=42, help="seed value")
-    group.add_argument("--num_steps", type=int, default=50000)
+    group.add_argument("--num_steps", type=int, default=25000)
     group.add_argument("--optim", type=str, default='sgd', choices=['adam', 'sgd'], help="learning rate")
     group.add_argument("--batch-size", type=int, default=100)
     group.add_argument("--inner-steps", type=int, default=4, help="number of inner steps")
