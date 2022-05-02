@@ -28,10 +28,7 @@ def run(args, device):
     else:
         raise ValueError("choose dataset from ['cifar10', 'cifar100']")
 
-    model_params = []
-    for p in hnet.parameters():
-        model_params.append(p)
-    print(torch.as_tensor(model_params))
+    print(torch.Tensor(hnet.state_dict()))
     exit()
 
     if args.mode == 'train':
