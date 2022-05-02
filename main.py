@@ -30,13 +30,11 @@ def run(args, device):
     else:
         raise ValueError("choose dataset from ['cifar10', 'cifar100']")
 
-    model_params = []
-    for p in hnet.parameters():
-        model_params.append(p.detach().tolist())
-    model_params = np.array(model_params).astype(np.float32)
-    print(torch.from_numpy(model_params))
+    new_set_params = {}
+    for key, value in hnet.state_dict():
+        new_set_params[key] = value.repeat(100)
+        print(value.size(), new_set_params[key].size())
     exit()
-
     if args.mode == 'train':
         if args.train_mode == 'clean':
             train_clean(args=args,device=device,nodes=nodes,hnet=hnet,net=net)
