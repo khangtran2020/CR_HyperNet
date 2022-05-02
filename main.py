@@ -26,7 +26,12 @@ def run(args, device):
     else:
         raise ValueError("choose dataset from ['cifar10', 'cifar100']")
 
-    pass
+    if args.mode == 'train':
+        if args.train_mode == 'clean':
+            train_clean(args=args,device=device,nodes=nodes,hnet=hnet,net=net)
+        elif args.train_mode == 'userdp':
+            train_userdp(args=args, device=device, nodes=nodes, hnet=hnet, net=net)
+
 
 if __name__ == '__main__':
     args = parse_args()
