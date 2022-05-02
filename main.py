@@ -31,7 +31,7 @@ def run(args, device):
         raise ValueError("choose dataset from ['cifar10', 'cifar100']")
 
     x = torch.tensor([1, 2, 3])
-    print(x.repeat(4, 2))
+    print(x.repeat(4, 1, 1))
 
     new_set_params = {}
     for key in hnet.state_dict():
