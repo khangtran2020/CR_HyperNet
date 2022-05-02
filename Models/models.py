@@ -14,7 +14,6 @@ import torch
 import torch.utils.data
 from tqdm import trange
 import time
-from Models.models import CNNHyper, CNNTarget
 from Data.node_noniid import BaseNodes
 from Utils.utils import get_device, set_logger, set_seed, get_gaussian_noise
 from copy import deepcopy
