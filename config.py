@@ -21,8 +21,6 @@ def add_data_group(group):
     group.add_argument('--save_data', action='store_true')
 
 
-
-
 def add_model_group(group):
     group.add_argument("--n-hidden", type=int, default=3, help="num. hidden layers")
     group.add_argument("--inner-lr", type=float, default=5e-3, help="learning rate for inner optimizer")
