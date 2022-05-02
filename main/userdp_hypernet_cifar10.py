@@ -95,11 +95,11 @@ def train(args, device) -> None:
     ##################
     embed_lr = args.embed_lr if args.embed_lr is not None else args.lr
     optimizers = {
-        'sgd': torch.optim.SGD(
-            [
-                {'params': [p for n, p in hnet.named_parameters() if 'embed' not in n]},
-                {'params': [p for n, p in hnet.named_parameters() if 'embed' in n], 'lr': embed_lr}
-            ], lr=args.lr  # , momentum=0.9, weight_decay=wd
+        'sgd': torch.optim.SGD(params=hnet.parameters(), lr=args.lr
+            # [
+            #     {'params': [p for n, p in hnet.named_parameters() if 'embed' not in n]},
+            #     {'params': [p for n, p in hnet.named_parameters() if 'embed' in n], 'lr': embed_lr}
+            # ], lr=args.lr  # , momentum=0.9, weight_decay=wd
         ),
         'adam': torch.optim.Adam(params=hnet.parameters(), lr=args.lr)
     }
