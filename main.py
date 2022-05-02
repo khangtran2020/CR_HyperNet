@@ -1,3 +1,5 @@
+import numpy as np
+
 import torch
 
 from Data.node_noniid import *
@@ -31,7 +33,7 @@ def run(args, device):
     model_params = []
     for p in hnet.parameters():
         model_params.append(p.detach().tolist())
-    model_params = np.array(model_params)
+    model_params = np.array(model_params).astype(np.float32)
     print(torch.from_numpy(model_params))
     exit()
 
