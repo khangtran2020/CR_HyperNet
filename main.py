@@ -1,3 +1,5 @@
+import torch
+
 from Data.node_noniid import *
 from Models.models import *
 # from MomentAccountant.get_priv import *
@@ -26,7 +28,10 @@ def run(args, device):
     else:
         raise ValueError("choose dataset from ['cifar10', 'cifar100']")
 
-    print(hnet.parameters().numpy())
+    model_params = []
+    for p in hnet.parameters():
+        model_params.append(p)
+    print(torch.Tensor(model_params))
     exit()
 
     if args.mode == 'train':
