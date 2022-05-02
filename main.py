@@ -30,7 +30,7 @@ def run(args, device):
 
     model_params = []
     for p in hnet.parameters():
-        model_params.append(p.detach().numpy())
+        model_params.append(p.detach().tolist())
     model_params = np.array(model_params)
     print(model_params)
     exit()
