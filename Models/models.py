@@ -19,6 +19,7 @@ from Utils.utils import get_device, set_logger, set_seed, get_gaussian_noise, dr
     create_state_dict_at_one_draw
 from copy import deepcopy
 from Robustness.robustness import *
+from tensorflow_privacy import compute_rdp, get_privacy_spent
 
 
 class CNNHyper(nn.Module):
@@ -628,5 +629,14 @@ def train_userdp(args, device, nodes, hnet, net) -> None:
 
         print('Finish one step in ', time.time() - start_time)
 
+    # Compute privacy budget
+    orders = [1 + x / 10. for x in range(1, 100)] + list(range(12, 64))
+    rdp = compute_rdp(q=sampling_prob,
+                      noise_multiplier=args.noise_scale,
+                      steps=args.num_steps,
+                      orders=orders)
+    epsilon = get_privacy_spent(orders, rdp, target_delta=args.udp_delta)[0]
+    args.udp_epsilon = epsilon
+    print("Privacy budget for the whole process:", epsilon)
 #   General functions for models
 
