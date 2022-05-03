@@ -238,7 +238,7 @@ def evaluate(nodes: BaseNodes, num_nodes, hnet, net, criteria, device, split='te
             weights, _ = hnet(torch.tensor([node_id], dtype=torch.long).to(device))
             net.load_state_dict(weights)
             pred = net(img)
-            print(pred.argmax(1).numpy()[1])
+            print(pred.argmax(1)[1])
             running_loss += criteria(pred, label).item()
             running_correct += pred.argmax(1).eq(label).sum().item()
             running_samples += len(label)
