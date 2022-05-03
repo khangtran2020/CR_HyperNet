@@ -482,13 +482,23 @@ def train_clean(args, device, nodes, hnet, net)-> None:
 
 # training userdp hypernet
 def train_userdp(args, device, nodes, hnet, net) -> None:
+    sampling_prob = args.bt / args.num_client
+    orders = [1 + x / 10. for x in range(1, 100)] + list(range(12, 64))
+    rdp = compute_rdp(q=sampling_prob,
+                      noise_multiplier=args.noise_scale,
+                      steps=args.num_steps,
+                      orders=orders)
+    epsilon = get_privacy_spent(orders, rdp, target_delta=args.udp_delta)[0]
+    args.udp_epsilon = epsilon
+    print("Privacy budget for the whole process:", epsilon)
+
     hnet = hnet.to(device)
     net = net.to(device)
 
     ##################
     # init optimizer #
     ##################
-    sampling_prob = args.bt / args.num_client
+
     embed_lr = args.embed_lr if args.embed_lr is not None else args.lr
     optimizers = {
         'sgd': torch.optim.SGD(params=hnet.parameters(), lr=args.lr
@@ -630,13 +640,6 @@ def train_userdp(args, device, nodes, hnet, net) -> None:
         print('Finish one step in ', time.time() - start_time)
 
     # Compute privacy budget
-    orders = [1 + x / 10. for x in range(1, 100)] + list(range(12, 64))
-    rdp = compute_rdp(q=sampling_prob,
-                      noise_multiplier=args.noise_scale,
-                      steps=args.num_steps,
-                      orders=orders)
-    epsilon = get_privacy_spent(orders, rdp, target_delta=args.udp_delta)[0]
-    args.udp_epsilon = epsilon
-    print("Privacy budget for the whole process:", epsilon)
+
 #   General functions for models
 
