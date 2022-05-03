@@ -1,6 +1,5 @@
 import os
 import sys
-
 path = "/".join([x for x in os.path.realpath(__file__).split('/')[:-2]])
 sys.path.insert(0, path)
 import torch.nn.functional as F
@@ -19,6 +18,7 @@ from Data.node_noniid import BaseNodes
 from Utils.utils import get_device, set_logger, set_seed, get_gaussian_noise, draw_noise_to_phi, \
     create_state_dict_at_one_draw
 from copy import deepcopy
+from Robustness.robustness import *
 
 
 class CNNHyper(nn.Module):
@@ -238,7 +238,7 @@ def evaluate(nodes: BaseNodes, num_nodes, hnet, net, criteria, device, split='te
             weights, _ = hnet(torch.tensor([node_id], dtype=torch.long).to(device))
             net.load_state_dict(weights)
             pred = net(img)
-            print(pred.argmax(1)[1])
+            # print(pred.argmax(1)[1])
             running_loss += criteria(pred, label).item()
             running_correct += pred.argmax(1).eq(label).sum().item()
             running_samples += len(label)
@@ -260,7 +260,7 @@ def evaluate_robust_udp(args, nodes, num_nodes, hnet, net, criteria, device, spl
     results = defaultdict(lambda: defaultdict(list))
     robust_result = {}
     for node_id in range(num_nodes):  # iterating over nodes
-        running_loss, running_correct, running_samples = 0., 0., 0.
+        running_loss, running_correct_from_logits, running_correct_from_argmax, running_samples = 0., 0., 0., 0.
         data = {
             'argmax_sum': [],
             'softmax_sum': [],
@@ -291,21 +291,61 @@ def evaluate_robust_udp(args, nodes, num_nodes, hnet, net, criteria, device, spl
                 pred = net(img)
                 argmax_pred = pred.argmax(1)
                 for j in range(args.batch_size):
-                    prediction_votes[j, argmax_pred.item()]
+                    prediction_votes[j, argmax_pred[j].item()] += 1
+                    softmax_sum[j] += pred[j].cpu().numpy()
+                    softmax_sqr_sum[j] += pred[j].cpu().numpy()**2
+            predictions = np.argmax(prediction_votes, axis=1)
+            predictions_logits = np.argmax(softmax_sum, axis=1)
+            truth = label.detach().numpy()
+            predictions_logit = torch.from_numpy(softmax_sum/args.num_draws_udp).to(device)
+            predictions_hard = torch.from_numpy(predictions).to(device)
 
-            running_loss += criteria(pred, label).item()
-            running_correct += pred.argmax(1).eq(label).sum().item()
+            running_loss += criteria(predictions_logit, label).item()
+            running_correct_from_logits += predictions_logit.argmax(1).eq(label).sum().item()
+            running_correct_from_argmax += predictions_hard.eq(label).sum().item()
             running_samples += len(label)
 
-        results[node_id]['loss'] = running_loss / (batch_count + 1)
-        results[node_id]['correct'] = running_correct
-        results[node_id]['total'] = running_samples
+            print("From logits: {} / {}".format(running_correct_from_logits, running_samples))
+            print("From argmax: {} / {}".format(running_correct_from_argmax, running_samples))
 
-    return results
+            results[node_id]['loss'] = running_loss / (batch_count + 1)
+            results[node_id]['correct'] = running_correct_from_logits
+            results[node_id]['total'] = running_samples
+            data['argmax_sum'] += prediction_votes.tolist()
+            data['softmax_sum'] += softmax_sum.tolist()
+            data['softmax_sqr_sum'] += softmax_sqr_sum.tolist()
+            data['pred_truth_argmax']  += (truth == predictions).tolist()
+            data['pred_truth_softmax'] += (truth == predictions_logits).tolist()
+
+        robustness_from_argmax = [robustness_size_argmax(
+            counts=x,
+            eta=args.robustness_confidence_proba,
+            dp_attack_size=args.attack_norm_bound,
+            dp_epsilon=args.udp_epsilon,
+            dp_delta=args.udp_delta,
+            dp_mechanism='userdp'
+            ) for x in data['argmax_sum']]
+        data['robustness_from_argmax'] = robustness_from_argmax
+        robustness_from_softmax = [robustness_size_softmax(
+            tot_sum=data['softmax_sum'][i],
+            sqr_sum=data['softmax_sqr_sum'][i],
+            counts=data['argmax_sum'][i],
+            eta=args.robustness_confidence_proba,
+            dp_attack_size=args.attack_norm_bound,
+            dp_epsilon=args.udp_epsilon,
+            dp_delta=args.udp_delta,
+            dp_mechanism='user'
+            ) for i in range(len(data['argmax_sum']))]
+        data['robustness_from_softmax'] = robustness_from_softmax
+        data['total_prediction'] = results[node_id]['total']
+        data['correct_prediction_logits'] = running_correct_from_logits
+        data['correct_prediction_argmax'] = running_correct_from_argmax
+        robust_result[node_id] = data
+    return robust_result
 
 
 # training vanilla hypernet
-def train_clean(args, device, nodes, hnet, net):
+def train_clean(args, device, nodes, hnet, net)-> None:
     hnet = hnet.to(device)
     net = net.to(device)
 
@@ -438,7 +478,6 @@ def train_clean(args, device, nodes, hnet, net):
                 torch.save([hnet, net], f)
 
         print('Finish one step in ', time.time() - start_time)
-
 
 # training userdp hypernet
 def train_userdp(args, device, nodes, hnet, net) -> None:
@@ -590,3 +629,4 @@ def train_userdp(args, device, nodes, hnet, net) -> None:
         print('Finish one step in ', time.time() - start_time)
 
 #   General functions for models
+
