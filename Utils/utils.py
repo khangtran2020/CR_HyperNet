@@ -1,4 +1,5 @@
 import argparse
+import collections
 import logging
 import random
 
@@ -58,3 +59,11 @@ def draw_noise_to_phi(hnet, num_draws, gaussian_noise):
         new_set_params[key] = torch.cat(num_draws * [value.view(tuple([1] + [x for x in value.size()]))])
         new_set_params[key] = new_set_params[key] + torch.normal(mean=0, std=gaussian_noise,size=new_set_params[key].size())
     return new_set_params
+
+def create_state_dict_at_one_draw(hnet, index, dict_of_state):
+    new_set_params = []
+    for key in hnet.state_dict():
+        new_set_params.append(tuple(key, dict_of_state[key][index]))
+    return collections.OrderedDict(new_set_params)
+
+
