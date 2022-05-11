@@ -65,7 +65,6 @@ FLAGS = None;
 
 # target_eps = [0.125,0.25,0.5,1,2,4,8]
 # target_eps =[0.5, 1, 2, 4, 6, 8]  #[0.5, 1, 2, 3, 4];
-target_eps = [1.34, 1.35, 1.36]  # [0.5, 1, 2, 3, 4];
 
 
 def main(args):
@@ -76,6 +75,7 @@ def main(args):
     sigma = z  # 'noise scale'
 
     delta = args.udp_delta  # 'delta'
+    target_eps = [args.udp_epsilon]
 
     clip = 1  # 'whether to clip the gradient'
 
