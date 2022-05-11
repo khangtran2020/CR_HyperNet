@@ -1,5 +1,6 @@
 import os
 import sys
+
 path = "/".join([x for x in os.path.realpath(__file__).split('/')[:-2]])
 sys.path.insert(0, path)
 import torch.nn.functional as F
@@ -294,11 +295,11 @@ def evaluate_robust_udp(args, nodes, num_nodes, hnet, net, criteria, device, spl
                 for j in range(args.batch_size):
                     prediction_votes[j, argmax_pred[j].item()] += 1
                     softmax_sum[j] += pred[j].cpu().numpy()
-                    softmax_sqr_sum[j] += pred[j].cpu().numpy()**2
+                    softmax_sqr_sum[j] += pred[j].cpu().numpy() ** 2
             predictions = np.argmax(prediction_votes, axis=1)
             predictions_logits = np.argmax(softmax_sum, axis=1)
             truth = label.detach().numpy()
-            predictions_logit = torch.from_numpy(softmax_sum/args.num_draws_udp).to(device)
+            predictions_logit = torch.from_numpy(softmax_sum / args.num_draws_udp).to(device)
             predictions_hard = torch.from_numpy(predictions).to(device)
 
             running_loss += criteria(predictions_logit, label).item()
@@ -315,7 +316,7 @@ def evaluate_robust_udp(args, nodes, num_nodes, hnet, net, criteria, device, spl
             data['argmax_sum'] += prediction_votes.tolist()
             data['softmax_sum'] += softmax_sum.tolist()
             data['softmax_sqr_sum'] += softmax_sqr_sum.tolist()
-            data['pred_truth_argmax']  += (truth == predictions).tolist()
+            data['pred_truth_argmax'] += (truth == predictions).tolist()
             data['pred_truth_softmax'] += (truth == predictions_logits).tolist()
 
         robustness_from_argmax = [robustness_size_argmax(
@@ -325,7 +326,7 @@ def evaluate_robust_udp(args, nodes, num_nodes, hnet, net, criteria, device, spl
             dp_epsilon=args.udp_epsilon,
             dp_delta=args.udp_delta,
             dp_mechanism='userdp'
-            ) for x in data['argmax_sum']]
+        ) for x in data['argmax_sum']]
         data['robustness_from_argmax'] = robustness_from_argmax
         robustness_from_softmax = [robustness_size_softmax(
             tot_sum=data['softmax_sum'][i],
@@ -336,7 +337,7 @@ def evaluate_robust_udp(args, nodes, num_nodes, hnet, net, criteria, device, spl
             dp_epsilon=args.udp_epsilon,
             dp_delta=args.udp_delta,
             dp_mechanism='user'
-            ) for i in range(len(data['argmax_sum']))]
+        ) for i in range(len(data['argmax_sum']))]
         data['robustness_from_softmax'] = robustness_from_softmax
         data['total_prediction'] = results[node_id]['total']
         data['correct_prediction_logits'] = running_correct_from_logits
@@ -346,7 +347,7 @@ def evaluate_robust_udp(args, nodes, num_nodes, hnet, net, criteria, device, spl
 
 
 # training vanilla hypernet
-def train_clean(args, device, nodes, hnet, net)-> None:
+def train_clean(args, device, nodes, hnet, net) -> None:
     hnet = hnet.to(device)
     net = net.to(device)
 
@@ -382,7 +383,7 @@ def train_clean(args, device, nodes, hnet, net)-> None:
     results = defaultdict(list)
 
     name_add = 'train_batch_n' + str(args.num_client) + '_nc' + str(args.bt) + '_lr' + str(args.lr) + '_ilr' + str(
-        args.inner_lr) + '_seed' + str(args.seed) + '_noniid_c2'
+        args.inner_lr) + '_seed' + str(args.seed) + '_noniid_c2_optim' + str(args.optim)
 
     step_vect = []
     for step in step_iter:
@@ -480,6 +481,7 @@ def train_clean(args, device, nodes, hnet, net)-> None:
 
         print('Finish one step in ', time.time() - start_time)
 
+
 # training userdp hypernet
 def train_userdp(args, device, nodes, hnet, net) -> None:
     sampling_prob = args.bt / args.num_client
@@ -527,8 +529,9 @@ def train_userdp(args, device, nodes, hnet, net) -> None:
 
     results = defaultdict(list)
 
-    name_add = 'train_batch_n' + str(args.num_client) + '_nc' + str(args.bt) + '_lr' + str(args.lr) + '_ilr' + str(
-        args.inner_lr) + '_seed' + str(args.seed) + '_noniid_c2'
+    name_add = 'train_batch_n{}_nc{}_lr{}_ilr{}_seed{}_noniid_c2_optim{}_noisescale_{}_numstep_{}'.format(
+        args.num_client, args.bt, args.lr, args.inner_lr, args.seed, args.optim, args.noise_scale,
+        args.num_steps)
 
     noise_std = get_gaussian_noise(clipping_noise=args.grad_clip, noise_scale=args.noise_scale,
                                    sampling_prob=sampling_prob, num_client=args.num_comp_cli)
@@ -642,4 +645,3 @@ def train_userdp(args, device, nodes, hnet, net) -> None:
     # Compute privacy budget
 
 #   General functions for models
-
