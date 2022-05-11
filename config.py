@@ -53,7 +53,7 @@ def add_defense_group(group):
     group.add_argument('--grad_clip', type=float, default=0.1, help="clipping bound for user-dp")
     group.add_argument('--noise_scale', type=float, default=0.1, help="noise scale for user-dp")
     group.add_argument('--num_comp_cli', type=int, default=1, help="number of compromised client for user-dp")
-    group.add_argument('--udp_delta', type=float, default=1, help="broken probability of userdp")
+    group.add_argument('--udp_delta', type=float, default=0.0001, help="broken probability of userdp")
     group.add_argument('--udp_epsilon', type=float, default=1, help="privacy budget of userdp")
     group.add_argument('--attack_norm_bound', type=float, default=1, help="bound of number of compromised client")
     group.add_argument('--num_draws_udp', type=float, default=1, help="number of draws for userdp robustness bound")
