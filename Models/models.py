@@ -382,8 +382,9 @@ def train_clean(args, device, nodes, hnet, net) -> None:
 
     results = defaultdict(list)
 
-    name_add = 'train_batch_n' + str(args.num_client) + '_nc' + str(args.bt) + '_lr' + str(args.lr) + '_ilr' + str(
-        args.inner_lr) + '_seed' + str(args.seed) + '_noniid_c2_optim' + str(args.optim)
+    name_add = 'train_batch_n{}_nc{}_lr{}_ilr{}_seed{}_noniid_c2_optim{}_numstep_{}'.format(
+        args.num_client, args.bt, args.lr, args.inner_lr, args.seed, args.optim,
+        args.num_steps)
 
     step_vect = []
     for step in step_iter:
