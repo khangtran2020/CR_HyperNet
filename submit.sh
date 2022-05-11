@@ -2,8 +2,8 @@
 # The above line must always be first, and must have "-l"
 #SBATCH -J hpn_udp
 #SBATCH -p datasci
-#SBATCH --output= ../results/userdp_hypernet.out
-#SBATCH --mem=128G
+#SBATCH --output=results/userdp_hypernet.out
+#SBATCH --mem=48G
 #SBATCH --gres=gpu:1
 module load python
 conda activate hypernet
