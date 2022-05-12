@@ -2,7 +2,7 @@
 # The above line must always be first, and must have "-l"
 #SBATCH -J hpn_clean
 #SBATCH -p datasci
-#SBATCH --output=results/hpn_clean_bt_80_step_1000.out
+#SBATCH --output=results/hpn_udp_bt_10_step_10000_noisescale_50_gradclip_0.000001_.out
 #SBATCH --mem=48G
 #SBATCH --gres=gpu:1
 module load python
