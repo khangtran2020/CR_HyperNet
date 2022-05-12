@@ -645,6 +645,7 @@ def train_userdp(args, device, nodes, hnet, net) -> None:
 
         print('Finish one step in ', time.time() - start_time)
 
+    return hnet, net
     # Compute privacy budget
 
 #   General functions for models
