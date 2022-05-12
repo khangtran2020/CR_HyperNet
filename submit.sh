@@ -1,3 +1,4 @@
+
 #!/bin/bash -l
 # The above line must always be first, and must have "-l"
 #SBATCH -J hpn_clean
@@ -7,5 +8,5 @@
 #SBATCH --gres=gpu:1
 module load python
 conda activate hypernet
-python main.py --train_mode clean --grad_clip 1.0 --delta 0.00001 --noise_scale 1.5 --num_comp_cli 1 --bt 80 --num_steps 1000
+python python main.py --train_mode userdp --grad_clip 0.000001 --udp_delta 0.00001 --noise_scale 50  --num_comp_cli 1 --bt 10 --num_steps 10000 --optim adam --lr 0.0001
 
