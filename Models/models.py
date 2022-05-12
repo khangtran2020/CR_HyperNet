@@ -536,6 +536,8 @@ def train_userdp(args, device, nodes, hnet, net) -> None:
 
     noise_std = get_gaussian_noise(clipping_noise=args.grad_clip, noise_scale=args.noise_scale,
                                    sampling_prob=sampling_prob, num_client=args.num_comp_cli)
+
+    print("Noise of the userdp:", noise_std)
     step_vect = []
     for step in step_iter:
         start_time = time.time()
