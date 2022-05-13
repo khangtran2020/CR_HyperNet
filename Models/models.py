@@ -644,7 +644,6 @@ def train_userdp(args, device, nodes, hnet, net) -> None:
                 torch.save([hnet, net], f)
 
         print('Finish one step in ', time.time() - start_time)
-
     # Compute privacy budget
 
 #   General functions for models
