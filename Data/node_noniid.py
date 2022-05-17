@@ -8,13 +8,14 @@ class BaseNodes:
             data_path,
             n_nodes,
             batch_size=128,
-            classes_per_node=2
+            classes_per_node=2,
+            use_embeddings = False
     ):
         self.data_name = data_name
         self.data_path = data_path
         self.n_nodes = n_nodes
         self.classes_per_node = classes_per_node
-
+        self.use_embeddings = use_embeddings
         self.batch_size = batch_size
 
         self.train_loaders, self.val_loaders, self.test_loaders = None, None, None
@@ -26,7 +27,8 @@ class BaseNodes:
             self.data_path,
             self.n_nodes,
             self.batch_size,
-            self.classes_per_node
+            self.classes_per_node,
+            self.use_embeddings,
         )
 
     def __len__(self):

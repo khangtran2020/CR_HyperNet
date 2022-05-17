@@ -5,10 +5,25 @@ import numpy as np
 import torch.utils.data
 import torchvision.transforms as transforms
 from torchvision.datasets import CIFAR10, CIFAR100
-import matplotlib.pyplot as plt
+import torchvision.models as models
 
 
-def get_datasets(data_name, dataroot, normalize=True, bd_size=10000):  # 10000
+class MyRotationTransform:
+    """Rotate by one of the given angles."""
+
+    def __init__(self, pretrain):
+        if pretrain == 'resnet18':
+            self.model = models.resnet18(pretrained=True)
+        elif pretrain == 'resnet50':
+            self.model = models.resnet50(pretrained=True)
+        elif pretrain == 'inception':
+            self.model = models.inception_v3(pretrained=True)
+
+    def __call__(self, x):
+        return self.model(x)
+
+
+def get_datasets(data_name, dataroot, normalize=True, bd_size=10000, use_embeddings=False):  # 10000
     """
     get_datasets returns train/val/test data splits of CIFAR10/100 datasets
     :param data_name: name of dataset, choose from [cifar10, cifar100]
@@ -30,6 +45,9 @@ def get_datasets(data_name, dataroot, normalize=True, bd_size=10000):  # 10000
 
     if normalize:
         trans.append(normalization)
+
+    if use_embeddings:
+        trans.append()
 
     transform = transforms.Compose(trans)
 
@@ -154,7 +172,7 @@ def gen_data_split(dataset, num_users, class_partitions):
     return user_data_idx
 
 
-def gen_random_loaders(data_name, data_path, num_users, bz, classes_per_user):
+def gen_random_loaders(data_name, data_path, num_users, bz, classes_per_user, use_embeddings):
     """
     generates train/val/test loaders of each client
     :param data_name: name of dataset, choose from [cifar10, cifar100]
@@ -166,7 +184,7 @@ def gen_random_loaders(data_name, data_path, num_users, bz, classes_per_user):
     """
     loader_params = {"batch_size": bz, "shuffle": False, "pin_memory": True, "num_workers": 0}
     dataloaders = []
-    datasets = get_datasets(data_name, data_path, normalize=True)
+    datasets = get_datasets(data_name, data_path, normalize=True, use_embeddings=use_embeddings)
     for i, d in enumerate(datasets):
         t = []
         # ensure same partition for train/test/val

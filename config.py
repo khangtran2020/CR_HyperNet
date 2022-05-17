@@ -14,11 +14,13 @@ def add_general_group(group):
 
 def add_data_group(group):
     group.add_argument('--dataset', type=str, default='cifar10', help="used dataset")
+    group.add_argument('--use_embedding', type=bool, default=False, help="Use embedding for LDP or not ")
     group.add_argument('--num_client', type=int, default=100, help="Number of client in the FL setting")
     group.add_argument('--num_compromised_client', type=int, default=2, help="Number of compromised client in the FL setting")
     group.add_argument('--data_path', type=str, default='data', help="the directory used to save dataset")
     group.add_argument('--data_verbose', action='store_true', help="print detailed dataset info")
     group.add_argument('--save_data', action='store_true')
+
 
 
 def add_model_group(group):
