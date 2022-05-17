@@ -7,6 +7,7 @@ from Robustness.robustness import *
 from Utils.utils import *
 from config import parse_args
 import os
+import json
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 os.environ["CUDA_VISIBLE_DEVICES"] = "4"
 
@@ -37,7 +38,10 @@ def run(args, device):
         elif args.train_mode == 'userdp':
             train_userdp(args=args, device=device, nodes=nodes, hnet=hnet, net=net)
             criteria = torch.nn.CrossEntropyLoss()
-            evaluate_robust_udp(args=args,num_nodes= args.num_client,nodes=nodes, hnet=hnet,net=net, criteria=criteria, device=device)
+            robust_result = evaluate_robust_udp(args=args,num_nodes= args.num_client,nodes=nodes, hnet=hnet,net=net, criteria=criteria, device=device)
+            with open(args.save_path+"robustness_result.json", "w") as outfile:
+                json.dump(robust_result, outfile)
+
 
 
 if __name__ == '__main__':

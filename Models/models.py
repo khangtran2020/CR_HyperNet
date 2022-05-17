@@ -261,6 +261,7 @@ def evaluate_robust_udp(args, nodes, num_nodes, hnet, net, criteria, device, spl
     noisy_model = draw_noise_to_phi(hnet=hnet, num_draws=args.num_draws_udp, gaussian_noise=noise, device=device)
     results = defaultdict(lambda: defaultdict(list))
     robust_result = {}
+
     for node_id in range(num_nodes):  # iterating over nodes
         running_loss, running_correct_from_logits, running_correct_from_argmax, running_samples = 0., 0., 0., 0.
         data = {
@@ -308,9 +309,6 @@ def evaluate_robust_udp(args, nodes, num_nodes, hnet, net, criteria, device, spl
             running_correct_from_logits += predictions_logit.argmax(1).eq(label).sum().item()
             running_correct_from_argmax += predictions_hard.eq(label).sum().item()
             running_samples += len(label)
-
-            print("From logits: {} / {}".format(running_correct_from_logits, running_samples))
-            print("From argmax: {} / {}".format(running_correct_from_argmax, running_samples))
 
             results[node_id]['loss'] = running_loss / (batch_count + 1)
             results[node_id]['correct'] = running_correct_from_logits
