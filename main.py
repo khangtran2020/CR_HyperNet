@@ -37,7 +37,7 @@ def run(args, device):
         elif args.train_mode == 'userdp':
             train_userdp(args=args, device=device, nodes=nodes, hnet=hnet, net=net)
             criteria = torch.nn.CrossEntropyLoss()
-            evaluate_robust_udp(args=args,nodes=nodes, hnet=hnet,net=net, criteria=criteria, device=device)
+            evaluate_robust_udp(args=args,num_nodes= args.num_client,nodes=nodes, hnet=hnet,net=net, criteria=criteria, device=device)
 
 
 if __name__ == '__main__':
