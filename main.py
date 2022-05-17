@@ -8,11 +8,12 @@ from Utils.utils import *
 from config import parse_args
 import os
 import json
+
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 os.environ["CUDA_VISIBLE_DEVICES"] = "4"
 
-def run(args, device):
 
+def run(args, device):
     # Init data
     nodes = BaseNodes(args.dataset, args.data_path, args.num_client, classes_per_node=args.classes_per_node,
                       batch_size=args.batch_size)
@@ -34,14 +35,17 @@ def run(args, device):
 
     if args.mode == 'train':
         if args.train_mode == 'clean':
-            train_clean(args=args,device=device,nodes=nodes,hnet=hnet,net=net)
+            train_clean(args=args, device=device, nodes=nodes, hnet=hnet, net=net)
         elif args.train_mode == 'userdp':
             train_userdp(args=args, device=device, nodes=nodes, hnet=hnet, net=net)
             criteria = torch.nn.CrossEntropyLoss()
-            robust_result = evaluate_robust_udp(args=args,num_nodes= args.num_client,nodes=nodes, hnet=hnet,net=net, criteria=criteria, device=device)
-            with open(args.save_path+"robustness_result.json", "w") as outfile:
+            robust_result = evaluate_robust_udp(args=args, num_nodes=args.num_client, nodes=nodes, hnet=hnet, net=net,
+                                                criteria=criteria, device=device)
+            with open(
+                    args.save_path + "robustness_results_numClient_{}_bt_{}_noiseScale_{}_numDraw_{}_epsilon_{}.json".format(
+                            args.num_client, args.bt, args.noise_scale, args.num_draws_udp, args.udp_epsilon),
+                    "w") as outfile:
                 json.dump(robust_result, outfile)
-
 
 
 if __name__ == '__main__':
