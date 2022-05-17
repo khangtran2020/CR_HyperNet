@@ -48,6 +48,7 @@ if __name__ == '__main__':
     device = get_device(gpus=args.gpu)
     if args.dataset == 'cifar10':
         args.classes_per_node = 2
+        args.num_label = 10
     else:
         args.classes_per_node = 10
     print("Class per nodes are:", args.classes_per_node)
