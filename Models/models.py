@@ -21,6 +21,7 @@ from Utils.utils import get_device, set_logger, set_seed, get_gaussian_noise, dr
 from copy import deepcopy
 from Robustness.robustness import *
 from tensorflow_privacy import compute_rdp, get_privacy_spent
+from tqdm import tqdm
 
 
 class CNNHyper(nn.Module):
@@ -264,7 +265,7 @@ def evaluate_robust_udp(args, nodes, num_nodes, hnet, net, criteria, device='cpu
     results = defaultdict(lambda: defaultdict(list))
     robust_result = {}
 
-    for node_id in range(num_nodes):  # iterating over nodes
+    for node_id in tqdm(range(num_nodes)):  # iterating over nodes
         running_loss, running_correct_from_logits, running_correct_from_argmax, running_samples = 0., 0., 0., 0.
         data = {
             'argmax_sum': [],
@@ -319,6 +320,9 @@ def evaluate_robust_udp(args, nodes, num_nodes, hnet, net, criteria, device='cpu
             data['softmax_sqr_sum'] += softmax_sqr_sum.tolist()
             data['pred_truth_argmax'] += (truth == predictions).tolist()
             data['pred_truth_softmax'] += (truth == predictions_logits).tolist()
+
+            print("From argamx: {} / {}".format(np.sum(truth == predictions), len(predictions)))
+            print("From logits: {} / {}".format(np.sum(truth == predictions_logits), len(predictions)))
 
         robustness_from_argmax = [robustness_size_argmax(
             counts=x,
