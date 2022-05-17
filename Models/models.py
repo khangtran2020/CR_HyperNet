@@ -281,6 +281,7 @@ def evaluate_robust_udp(args, nodes, num_nodes, hnet, net, criteria, device, spl
             curr_data = nodes.train_loaders[node_id]
 
         for batch_count, batch in enumerate(curr_data):
+            print(len(batch))
             img, label = tuple(t.to(device) for t in batch)
             prediction_votes = np.zeros([args.batch_size, args.num_label])
             softmax_sum = np.zeros([args.batch_size, args.num_label])
