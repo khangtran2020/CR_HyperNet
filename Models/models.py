@@ -300,7 +300,7 @@ def evaluate_robust_udp(args, nodes, num_nodes, hnet, net, criteria, device, spl
                     softmax_sqr_sum[j] += pred[j].cpu().numpy() ** 2
             predictions = np.argmax(prediction_votes, axis=1)
             predictions_logits = np.argmax(softmax_sum, axis=1)
-            truth = label.detach().numpy()
+            truth = label.cpu().detach().numpy()
             predictions_logit = torch.from_numpy(softmax_sum / args.num_draws_udp).to(device)
             predictions_hard = torch.from_numpy(predictions).to(device)
 
