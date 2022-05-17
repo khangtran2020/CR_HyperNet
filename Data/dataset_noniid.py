@@ -8,7 +8,7 @@ from torchvision.datasets import CIFAR10, CIFAR100
 import torchvision.models as models
 
 
-class MyRotationTransform:
+class EmbeddingTransform:
     """Rotate by one of the given angles."""
 
     def __init__(self, pretrain):
@@ -47,7 +47,8 @@ def get_datasets(data_name, dataroot, normalize=True, bd_size=10000, use_embeddi
         trans.append(normalization)
 
     if use_embeddings:
-        trans.append()
+        embed = EmbeddingTransform('resnet18')
+        trans.append(embed)
 
     transform = transforms.Compose(trans)
 

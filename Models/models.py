@@ -253,7 +253,9 @@ def evaluate(nodes: BaseNodes, num_nodes, hnet, net, criteria, device, split='te
 
 
 @torch.no_grad()
-def evaluate_robust_udp(args, nodes, num_nodes, hnet, net, criteria, device, split='test'):
+def evaluate_robust_udp(args, nodes, num_nodes, hnet, net, criteria, device='cpu', split='test'):
+    hnet.to(device)
+    net.to(device)
     hnet.eval()
     noise = get_gaussian_noise(clipping_noise=args.grad_clip, noise_scale=args.noise_scale,
                                sampling_prob=args.bt / args.num_client, num_client=args.num_client,
