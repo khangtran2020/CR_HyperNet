@@ -283,9 +283,9 @@ def evaluate_robust_udp(args, nodes, num_nodes, hnet, net, criteria, device, spl
         for batch_count, batch in enumerate(curr_data):
             img, label = tuple(t.to(device) for t in batch)
             num_of_test_point = len(img)
-            prediction_votes = np.zeros([args.batch_size, num_of_test_point])
-            softmax_sum = np.zeros([args.batch_size, num_of_test_point])
-            softmax_sqr_sum = np.zeros([args.batch_size, num_of_test_point])
+            prediction_votes = np.zeros([num_of_test_point, args.num_label])
+            softmax_sum = np.zeros([num_of_test_point, args.num_label])
+            softmax_sqr_sum = np.zeros([num_of_test_point, args.num_label])
             for draw in range(args.num_draws_udp):
                 draw_state = create_state_dict_at_one_draw(hnet=hnet, index=draw, dict_of_state=noisy_model)
                 hnet.load_state_dict(draw_state)
@@ -293,7 +293,7 @@ def evaluate_robust_udp(args, nodes, num_nodes, hnet, net, criteria, device, spl
                 net.load_state_dict(weights)
                 pred = net(img)
                 argmax_pred = pred.argmax(1)
-                print(pred[0].size())
+                # print(argmax_pred.size(), args.batch_size)
                 for j in range(args.batch_size):
                     prediction_votes[j, argmax_pred[j].item()] += 1
                     softmax_sum[j] += pred[j].cpu().numpy()
