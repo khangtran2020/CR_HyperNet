@@ -293,7 +293,7 @@ def evaluate_robust_udp(args, nodes, num_nodes, hnet, net, criteria, device, spl
                 net.load_state_dict(weights)
                 pred = net(img)
                 argmax_pred = pred.argmax(1)
-                print(pred.size())
+                print(pred[0].size())
                 for j in range(args.batch_size):
                     prediction_votes[j, argmax_pred[j].item()] += 1
                     softmax_sum[j] += pred[j].cpu().numpy()
