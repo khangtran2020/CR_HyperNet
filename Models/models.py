@@ -258,7 +258,7 @@ def evaluate_robust_udp(args, nodes, num_nodes, hnet, net, criteria, device, spl
     noise = get_gaussian_noise(clipping_noise=args.grad_clip, noise_scale=args.noise_scale,
                                sampling_prob=args.bt / args.num_client, num_client=args.num_client,
                                num_compromised_client=args.num_comp_cli)
-    noisy_model = draw_noise_to_phi(hnet=hnet, num_draws=args.num_draws_udp, gaussian_noise=noise)
+    noisy_model = draw_noise_to_phi(hnet=hnet, num_draws=args.num_draws_udp, gaussian_noise=noise, device=device)
     results = defaultdict(lambda: defaultdict(list))
     robust_result = {}
     for node_id in range(num_nodes):  # iterating over nodes
