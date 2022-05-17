@@ -1,13 +1,14 @@
 import numpy as np
-
 import torch
-
 from Data.node_noniid import *
 from Models.models import *
 # from MomentAccountant.get_priv import *
 from Robustness.robustness import *
 from Utils.utils import *
 from config import parse_args
+import os
+os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+os.environ["CUDA_VISIBLE_DEVICES"] = "4"
 
 def run(args, device):
 
