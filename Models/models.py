@@ -344,7 +344,7 @@ def evaluate_robust_udp(args, nodes, num_nodes, hnet, net, criteria, device='cpu
             dp_attack_size=args.attack_norm_bound,
             dp_epsilon=args.udp_epsilon,
             dp_delta=args.udp_delta,
-            dp_mechanism='user'
+            dp_mechanism='userdp'
         ) for i in range(len(data['argmax_sum']))]
         data['robustness_from_softmax'] = robustness_from_softmax
         data['total_prediction'] = results[node_id]['total']
