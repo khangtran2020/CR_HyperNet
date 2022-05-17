@@ -63,7 +63,7 @@ def draw_noise_to_phi(hnet, num_draws, gaussian_noise, device):
 def create_state_dict_at_one_draw(hnet, index, dict_of_state):
     new_set_params = []
     for key in hnet.state_dict():
-        new_set_params.append(tuple(key, dict_of_state[key][index]))
+        new_set_params.append((key, dict_of_state[key][index]))
     return collections.OrderedDict(new_set_params)
 
 
