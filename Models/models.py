@@ -265,7 +265,9 @@ def evaluate_robust_udp(args, nodes, num_nodes, hnet, net, criteria, device='cpu
     results = defaultdict(lambda: defaultdict(list))
     robust_result = {}
 
-    for node_id in tqdm(range(num_nodes)):  # iterating over nodes
+    node_iter = trange(num_nodes)
+
+    for node_id in node_iter:  # iterating over nodes
         running_loss, running_correct_from_logits, running_correct_from_argmax, running_samples = 0., 0., 0., 0.
         data = {
             'argmax_sum': [],
