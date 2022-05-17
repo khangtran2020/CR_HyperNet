@@ -40,7 +40,7 @@ def run(args, device):
             train_userdp(args=args, device=device, nodes=nodes, hnet=hnet, net=net)
             criteria = torch.nn.CrossEntropyLoss()
             robust_result = evaluate_robust_udp(args=args, num_nodes=args.num_client, nodes=nodes, hnet=hnet, net=net,
-                                                criteria=criteria, device=device)
+                                                criteria=criteria)
             with open(
                     args.save_path + "robustness_results_numClient_{}_bt_{}_noiseScale_{}_numDraw_{}_epsilon_{:.2f}.json".format(
                         args.num_client, args.bt, args.noise_scale, args.num_draws_udp, args.udp_epsilon),
