@@ -331,6 +331,7 @@ def evaluate_robust_udp(args, nodes, num_nodes, hnet, net, criteria, device, spl
         ) for x in data['argmax_sum']]
         data['robustness_from_argmax'] = robustness_from_argmax
         robustness_from_softmax = [robustness_size_softmax(
+            args=args,
             tot_sum=data['softmax_sum'][i],
             sqr_sum=data['softmax_sqr_sum'][i],
             counts=data['argmax_sum'][i],
