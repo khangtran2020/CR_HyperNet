@@ -20,7 +20,10 @@ class EmbeddingTransform:
             self.model = models.inception_v3(pretrained=True)
 
     def __call__(self, x):
-        return self.model(x)
+        embedding = self.model(x)
+        size = embedding.size().item()
+        print(size)
+        return embedding
 
 
 def get_datasets(data_name, dataroot, normalize=True, bd_size=10000, use_embeddings=False):  # 10000
