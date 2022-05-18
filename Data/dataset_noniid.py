@@ -185,6 +185,7 @@ def gen_random_loaders(data_name, data_path, num_users, bz, classes_per_user, us
     :param classes_per_user: number of classes assigned to each client
     :return: train/val/test loaders of each client, list of pytorch dataloaders
     """
+    print("Are we using embeddings:", use_embeddings)
     loader_params = {"batch_size": bz, "shuffle": False, "pin_memory": True, "num_workers": 0}
     dataloaders = []
     datasets = get_datasets(data_name, data_path, normalize=True, use_embeddings=use_embeddings)
