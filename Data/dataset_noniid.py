@@ -20,6 +20,7 @@ class EmbeddingTransform:
             self.model = models.inception_v3(pretrained=True)
 
     def __call__(self, x):
+        x = x.view(tuple([1] + [i for i in x.size()]))
         embedding = self.model(x)
         return embedding
 

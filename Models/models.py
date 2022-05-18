@@ -576,6 +576,8 @@ def train_userdp(args, device, nodes, hnet, net) -> None:
 
                 batch = next(iter(nodes.train_loaders[node_id]))
                 img, label = tuple(t.to(device) for t in batch)
+                print(imge.size())
+                exit()
 
                 pred = net(img)
                 loss = criteria(pred, label)
