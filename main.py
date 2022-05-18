@@ -16,8 +16,8 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "4"
 def run(args, device):
     # Init data
     nodes = BaseNodes(args.dataset, args.data_path, args.num_client, classes_per_node=args.classes_per_node,
-                      batch_size=args.batch_size)
-    print("Are we using embeddings:", args.use_embedding)
+                      batch_size=args.batch_size, use_embeddings=args.use_embedding)
+    # print("Are we using embeddings:", args.use_embedding)
     if args.embed_dim == -1:
         logging.info("auto embedding size")
         args.embed_dim = int(1 + args.num_client / 4)
