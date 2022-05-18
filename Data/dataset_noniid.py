@@ -22,8 +22,7 @@ class EmbeddingTransform:
     def __call__(self, x):
         embedding = self.model(x)
         size = embedding.size().item()
-        print(size)
-        return embedding
+        return embedding.view(size[0], size[-1]*size[-2])
 
 
 def get_datasets(data_name, dataroot, normalize=True, bd_size=10000, use_embeddings=False):  # 10000
