@@ -576,11 +576,10 @@ def train_userdp(args, device, nodes, hnet, net) -> None:
 
                 batch = next(iter(nodes.train_loaders[node_id]))
                 img, label = tuple(t.to(device) for t in batch)
-                print(img.size())
-                exit()
 
                 pred = net(img)
-
+                print(img.size())
+                exit()
                 loss = criteria(pred, label)
                 loss.backward()
                 torch.nn.utils.clip_grad_norm_(net.parameters(), 50)
