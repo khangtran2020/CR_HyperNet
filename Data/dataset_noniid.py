@@ -49,6 +49,7 @@ def get_datasets(data_name, dataroot, normalize=True, bd_size=10000, use_embeddi
         trans.append(normalization)
 
     if use_embeddings:
+        print("Yes we use the embedding")
         embed = EmbeddingTransform('resnet18')
         trans.append(embed)
 
