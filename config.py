@@ -60,7 +60,7 @@ def add_defense_group(group):
     group.add_argument('--udp_epsilon', type=float, default=1, help="privacy budget of userdp")
     group.add_argument('--attack_norm_bound', type=float, default=1, help="bound of number of compromised client")
     group.add_argument('--num_draws_udp', type=int, default=1000, help="number of draws for userdp robustness bound")
-    group.add_argument('--num_draws_ldp', type=float, default=1000, help="number of draws for LDP robustness bound")
+    group.add_argument('--num_draws_ldp', type=float, default=100, help="number of draws for LDP robustness bound")
     group.add_argument('--eps_userdp', type=float, default=1.0, help="privacy budget for user DP")
     group.add_argument('--eps_ldp', type=float, default=1.0, help="privacy budget for LDP")
     group.add_argument('--model_file', type=str, default=None, help="File to the model")
