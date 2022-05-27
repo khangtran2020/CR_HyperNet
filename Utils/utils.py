@@ -56,7 +56,7 @@ def draw_noise_to_phi(hnet, num_draws, gaussian_noise, device):
     new_set_params = {}
     for key in hnet.state_dict():
         value = hnet.state_dict()[key]
-        new_set_params[key] = torch.cat(num_draws * [value.view(tuple([1] + [x for x in value.size()]))])
+        new_set_params[key] = torch.cat(num_draws * [torch.unsqueeze(value, 0)])
         new_set_params[key] = new_set_params[key] + torch.normal(mean=0, std=gaussian_noise,size=new_set_params[key].size()).to(device)
     return new_set_params
 

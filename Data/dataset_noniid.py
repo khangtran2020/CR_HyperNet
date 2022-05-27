@@ -8,21 +8,6 @@ from torchvision.datasets import CIFAR10, CIFAR100
 import torchvision.models as models
 
 
-class EmbeddingTransform:
-    """Rotate by one of the given angles."""
-
-    def __init__(self, pretrain):
-        if pretrain == 'resnet18':
-            self.model = models.resnet18(pretrained=True)
-        elif pretrain == 'resnet50':
-            self.model = models.resnet50(pretrained=True)
-        elif pretrain == 'inception':
-            self.model = models.inception_v3(pretrained=True)
-
-    def __call__(self, x):
-        x = x.view(tuple([1] + [i for i in x.size()]))
-        embedding = self.model(x)
-        return embedding
 
 
 def get_datasets(data_name, dataroot, normalize=True, bd_size=10000, use_embeddings=False):  # 10000
@@ -47,11 +32,6 @@ def get_datasets(data_name, dataroot, normalize=True, bd_size=10000, use_embeddi
 
     if normalize:
         trans.append(normalization)
-
-    if use_embeddings:
-        print("Yes we use the embedding")
-        embed = EmbeddingTransform('resnet18')
-        trans.append(embed)
 
     transform = transforms.Compose(trans)
 
