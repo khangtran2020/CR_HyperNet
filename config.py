@@ -65,6 +65,8 @@ def add_defense_group(group):
     group.add_argument('--eps_ldp', type=float, default=1.0, help="privacy budget for LDP")
     group.add_argument('--model_file', type=str, default=None, help="File to the model")
     group.add_argument('--robustness_confidence_proba', type=float, default=0.05, help="confidence intervals")
+    group.add_argument('--num_bit', type=int, default=10, help="number of bit to use")
+    group.add_argument('--exponent_bit', type=int, default=10, help="number of bit to use for the integer part")
 
 
 def parse_args():
